@@ -60,11 +60,26 @@
             editProfile() {
                this.isEditMode = true
             },
-            updateProfile() {
+            async updateProfile() {
                 this.isEditMode = false
+
+                const payload = {
+                    name: this.name,
+                    email: this.email,
+                    interests: this.interests  
+                }
+                let response = await this.updateUserProfile(payload);
+                console.log(response)
             },
             async fetchUserProfile() {
                 return await (await fetch('get-profile')).json()
+            },
+            async updateUserProfile(payload) {
+                const res = await fetch('update-profile', {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                })
+                return await res.json()
             }
         }
     }

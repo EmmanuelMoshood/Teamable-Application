@@ -19,12 +19,18 @@ app.get('/get-profile', (req, res) => {
     const userData = {
         name: "Engr Moshman",
         email: "mosh@example.com",
-        interest: "coding, cloud, 3d"
+        interests: "coding, cloud, 3d"
     } 
     res.send(userData);
 })
 
-
+//create a response for when frontend request on endpoint '/update-profile'
+app.post('/update-profile', (req, res) => {
+   const payload = req.body;
+   //then connect to DB
+   //save to DB
+   res.send({info: "user profile data updated successfully"})
+})
 
 //starts the web server and listens for HTTP request on specified port
 //it takes 2 arguments; the port and when to do next
