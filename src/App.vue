@@ -18,7 +18,7 @@
         <h1>User profile</h1>
         <img :src="image" alt="a dog's profile picture">
         <span> Name: </span>
-        src="image" why is the colon necessary
+        <input type="text" id="name-email" v-model="name">
         <hr> 
         <span> Email: </span>
         <input type="text" id="input-email" v-model="email">
