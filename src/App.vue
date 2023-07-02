@@ -18,7 +18,7 @@
         <h1>User profile</h1>
         <img :src="image" alt="a dog's profile picture">
         <span> Name: </span>
-        <input type="text" id="input-name" v-model="name">
+        src="image" why is the colon necessary
         <hr> 
         <span> Email: </span>
         <input type="text" id="input-email" v-model="email">
@@ -43,11 +43,17 @@
         data() {
             return {
                 image: image,
-                name: "Anna Smith",
-                email: "anna.smith@example.com",
-                interests: "coding",
+                name: "",
+                email: "",
+                interests: "",
                 isEditMode: false
             }
+        },
+        async created(){
+            let userData = await this.fetchUserProfile();
+            this.name = userData.name;
+            this.email = userData.email;
+            this.interests = userData.interests;
         },
         methods: {
             // switching views
@@ -56,6 +62,9 @@
             },
             updateProfile() {
                 this.isEditMode = false
+            },
+            async fetchUserProfile() {
+                return await (await fetch('get-profile')).json()
             }
         }
     }

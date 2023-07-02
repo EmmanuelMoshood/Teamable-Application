@@ -9,6 +9,9 @@
         "vue": "3.2.40"
     },
     "scripts": {
-        "serve": "vue-cli-service serve"
+        "serve": "vue-cli-service serve", 
+        "build": "vue-cli-service build", 
+        "start": "node server.js"
     }
 }
+
