@@ -80,6 +80,9 @@
                     body: JSON.stringify(payload)
                 })
                 return await res.json()
+            },
+            async testFunc() {
+                return await (await fetch('test')).json()
             }
         }
     }

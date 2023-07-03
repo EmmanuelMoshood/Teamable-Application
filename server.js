@@ -1,77 +1,82 @@
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const { MongoClient } = require('mongodb')
 
-//import express modules
-const express = require("express");
 
-//import mongodb 
-const { MongoClient } = require('mongodb');
+const url = 'mongodb+srv://emmanuelmoshood571:ddhlGhpthUYeoWrC@cluster0.wdfer6v.mongodb.net/?retryWrites=true&w=majority'
+const client = new MongoClient(url)
+const dbName = 'test_db'
+const collName = 'test_collection'
 
-//connect to mongodb
-const url = 'mongodb://localhost:27017';
-const client = new MongoClient(url);
-//create db
-const dbName = 'company_db'
-const collName = 'employees'
 
-//create an instance of express app 
-const app = express();
 
-//we need convert all the json coming in to js object
-//import body-parser
-const bodyParser = require("body-parser")
 app.use(bodyParser.json())
+app.use('/', express.static(__dirname + '/dist'))
 
-//use middleware to specify the source of static files needed in the application
-app.use('/', express.static(__dirname + "/dist"))
+app.get('/test', (req, res) => {
+    async function testFunc(){
+        let result = await client.connect();
+        let db = result.db(dbName)
+    }
 
-
-//create a response for when frontend makes a request on endpoint '/get-profile'
-app.get('/get-profile', async (req, res) => {
-    const userData = {
-        name: "Engr Moshman",
-        email: "mosh@example.com",
-        interests: "coding, cloud, 3d"
-    } 
-    //then connect to DB
-    // await client.connect()
-    // console.log("db is connected")
-    //save to DB
-
-
-    res.send(userData);
+    res.send("test_db created")
 })
 
-//create a response for when frontend request on endpoint '/update-profile'
-app.post('/update-profile', async (req, res) => {
-   const payload = req.body;
+app.get('/get-profile', async function(req, res) {
+    // connect to mongodb database
+    await client.connect()
+    console.log('Connected successfully to server')
 
-   //then connect to DB
-   await client.connect()
-   console.log("db is connected")
-   //initiate db
-   const db = client.db(dbName)
-   const collection = db.collection(collName)
-   //save payload to DB collection
-    payload['id'] = 1;
-    const updatedValues = {$set: payload}
-    await collection.updateOne({id:1}, updatedValues, {upsert:true}) 
+    // initiate or get the db & collection
+    const db = client.db(dbName)
+    const collection = db.collection(collName)
+    
+    // get data from database
+    const result = await collection.findOne({id: 1})
+    console.log(result)
     client.close()
 
-
-   res.send({info: "user profile data updated successfully"})
+    response = {}
+    if (result !== null) {
+        response = {
+            name: result.name,
+            email: result.email,
+            interests: result.interests
+        }
+    }
+    res.send(response)
 })
 
-//starts the web server and listens for HTTP request on specified port
-//it takes 2 arguments; the port and when to do next
-const port = 3000; //localhost 
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
-});
+app.post('/update-profile', async function(req, res) {
+    const payload = req.body
+    console.log(payload)
+
+    if (Object.keys(payload).length === 0) {
+        res.send({error: "empty payload. Couldn't update user profile data"})
+    } else {
+        // connect to mongodb database
+        await client.connect()
+        console.log('Connected successfully to database server')
+
+        // initiate or get the db & collection
+        const db = client.db(dbName)
+        const collection = db.collection(collName)
+
+        // save payload data to the database
+        payload['id'] = 1;
+        const updatedValues = { $set: payload }
+        await collection.updateOne({id: 1}, updatedValues, {upsert: true});
+        client.close()
+
+        res.send({info: "user profile data updated successfully"})
+    }
+})
 
 
 
 
+app.listen(3000, function () {
+    console.log("app listening on port 3000")
+})
 
-
-
-//HTTP defines the communication between the frontend and the backend
-//URL uniform resource locator
