@@ -2,6 +2,10 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const { MongoClient } = require('mongodb')
+const {
+    isEmailInvalid,
+    isPayloadEmpty
+} = require('./validator')
 
 const url = 'mongodb+srv://emmanuelmoshood571:moshman@moshmanapis.ltbrgza.mongodb.net/'
 const client = new MongoClient(url)
@@ -40,8 +44,8 @@ app.post('/update-profile', async function(req, res) {
     const payload = req.body
     console.log(payload)
 
-    if (Object.keys(payload).length === 0) {
-        res.send({error: "empty payload. Couldn't update user profile data"})
+    if (isPayloadEmpty || isEmailInvalid) {
+        res.send({error: "invalid payload. Couldn't update user profile data"})
     } else {
         // connect to mongodb database
         await client.connect()
@@ -64,3 +68,9 @@ app.post('/update-profile', async function(req, res) {
 app.listen(3000, function () {
     console.log("app listening on port 3000")
 })
+
+
+
+
+
+//make these items able to be improted from other files 
