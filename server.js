@@ -3,25 +3,13 @@ const app = express()
 const bodyParser = require('body-parser')
 const { MongoClient } = require('mongodb')
 
-
-const url = 'mongodb+srv://emmanuelmoshood571:ddhlGhpthUYeoWrC@cluster0.wdfer6v.mongodb.net/?retryWrites=true&w=majority'
+const url = 'mongodb+srv://emmanuelmoshood571:moshman@moshmanapis.ltbrgza.mongodb.net/'
 const client = new MongoClient(url)
-const dbName = 'test_db'
-const collName = 'test_collection'
-
-
+const dbName = 'company_db'
+const collName = 'employees'
 
 app.use(bodyParser.json())
 app.use('/', express.static(__dirname + '/dist'))
-
-app.get('/test', (req, res) => {
-    async function testFunc(){
-        let result = await client.connect();
-        let db = result.db(dbName)
-    }
-
-    res.send("test_db created")
-})
 
 app.get('/get-profile', async function(req, res) {
     // connect to mongodb database
@@ -73,10 +61,6 @@ app.post('/update-profile', async function(req, res) {
     }
 })
 
-
-
-
 app.listen(3000, function () {
     console.log("app listening on port 3000")
 })
-

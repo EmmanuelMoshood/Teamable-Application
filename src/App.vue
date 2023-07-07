@@ -1,114 +1,106 @@
 <template>
-    
-    <!-- display view -->
-    <div v-show="!isEditMode" class="container" id="display-view">
+    <div v-show="!isEditMode">
         <h1>User profile</h1>
-        <img :src="image" alt="a dog's profile picture">        
-        <span> Name: <b id="user-name">{{ name }}</b></span>
-        <hr> 
-        <span> Email: <b id="user-email">{{ email }}</b></span>
-        <hr> 
-        <span> Interests: <b id="user-interests">{{ interests }}</b></span>
-        <hr>
-        <button @click="editProfile">Edit Profile</button>
-    </div>
+        <img :src="image">
+        
+        <span>Name: </span><b id="name">{{ name }}</b>
+        <hr />
 
-    <!-- edit view -->
-    <div v-show="isEditMode" class="container" id="edit-view">
+        <span>Email: </span><b id="email">{{ email }}</b>
+        <hr />
+
+        <span>Interests: </span><b id="interests">{{ interests }}</b>
+        <hr />
+
+        <button @click="handleEditProfile">Edit Profile</button>
+    </div>
+    <div v-show="isEditMode">
         <h1>User profile</h1>
-        <img :src="image" alt="a dog's profile picture">
-        <span> Name: </span>
-        <input type="text" id="name-email" v-model="name">
-        <hr> 
-        <span> Email: </span>
-        <input type="text" id="input-email" v-model="email">
-        <hr> 
-        <span> Interests: </span>
-        <input type="text" id="input-interests" v-model="interests">
-        <hr>
-        <button @click="updateProfile">Save Profile</button>
-    </div>
+        <img :src="image">
+        
+        <span>Name: </span>
+        <input type="text" id="input-name" v-model="name"/>
+        <hr />
 
+        <span>Email: </span>
+        <input type="text" id="input-email" v-model="email" />
+        <hr />
+
+        <span>Interests: </span>
+        <input type="text" id="input-interests" v-model="interests" />
+        <hr />
+
+        <button @click="handleUpdateProfile">Update Profile</button>
+    </div>
 </template>
 
-
-
-
-
 <script>
-    import image from "./profile.jpeg"
-
-    export default {
-        name: "App",
-        data() {
-            return {
-                image: image,
-                name: "",
-                email: "",
-                interests: "",
-                isEditMode: false
-            }
+import image from "./profile.jpeg"
+export default {
+    name: "App",
+    data() {
+        return {
+            image: image,
+            name: "",
+            email: "",
+            interests: "",
+            isEditMode: false
+        }
+    },
+    async created() {
+        const userData = await this.fetchUserProfile()
+        this.name = userData.name
+        this.email = userData.email
+        this.interests = userData.interests
+    },
+    methods: {
+        handleEditProfile() {
+            this.isEditMode = true
         },
-        async created(){
-            let userData = await this.fetchUserProfile();
-            this.name = userData.name;
-            this.email = userData.email;
-            this.interests = userData.interests;
-        },
-        methods: {
-            // switching views
-            editProfile() {
-               this.isEditMode = true
-            },
-            async updateProfile() {
-                this.isEditMode = false
-
-                const payload = {
-                    name: this.name,
-                    email: this.email,
-                    interests: this.interests  
-                }
-                let response = await this.updateUserProfile(payload);
-                console.log(response)
-            },
-            async fetchUserProfile() {
-                return await (await fetch('get-profile')).json()
-            },
-            async updateUserProfile(payload) {
-                const res = await fetch('update-profile', {
-                    method: "POST",
-                    body: JSON.stringify(payload)
-                })
-                return await res.json()
-            },
-            async testFunc() {
-                return await (await fetch('test')).json()
+        async handleUpdateProfile() {
+            const payload = {
+                name: this.name,
+                email: this.email,
+                interests: this.interests
             }
+            const resJson = await this.updateUserProfile(payload)
+            console.log(resJson)
+
+            this.isEditMode = false
+        },
+        async fetchUserProfile() {
+            const res = await fetch('get-profile')
+            return await res.json()
+        },
+        async updateUserProfile(payload) {
+            const res = await fetch('update-profile', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            return await res.json()
         }
     }
+}
 </script>
 
-
-
-
-
-
-<style>
-    
-
-.container{
-    width: 40%;
-    margin: auto;
-}
-
-img{
-    height: 270px;
+<style> 
+img {
     width: 320px;
+    height: 270px;
     display: block;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
-hr{
+div {
+    margin: 40px auto;
+    width: 80%;
+}
+
+hr {
     width: 400px;
     margin: 25px 0;
 }
@@ -129,6 +121,4 @@ input {
     font-size: 15px;
     padding: 10px;
 }
-
-
 </style>
