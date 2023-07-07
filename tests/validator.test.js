@@ -1,4 +1,4 @@
-const { isEmailInvalid, isPayloadEmpty } = require('./validator')
+const { isEmailInvalid, isPayloadEmpty } = require('../validator')
 
 
 //testing validitity of email
