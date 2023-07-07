@@ -40,3 +40,4 @@ test('empty payload', () => {
     const result = isPayloadEmpty(testpayload)
     expect(result).toBe(false)
 })
+

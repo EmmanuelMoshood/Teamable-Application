@@ -65,7 +65,8 @@ app.post('/update-profile', async function(req, res) {
     }
 })
 
-app.listen(3000, function () {
+//server here will serve a reference of the app listening on port 3000
+const server = app.listen(3000, function () {
     console.log("app listening on port 3000")
 })
 
@@ -74,3 +75,7 @@ app.listen(3000, function () {
 
 
 //make these items able to be improted from other files 
+module.exports = {
+    app, 
+    server
+}
